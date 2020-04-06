@@ -46,6 +46,12 @@ export interface MenuProps extends StyleProps {
   animation?: string;
 
   /**
+   * Menu will be rendered inside to targetRef
+   * use this to render inside an iframe
+   */
+  targetRef?: React.RefObject<HTMLElement>;
+
+  /**
    * Invoked when the menu is shown.
    */
   onShown?: () => void;
@@ -71,7 +77,11 @@ class Menu extends Component<MenuProps, MenuState> {
     theme: PropTypes.string,
     animation: PropTypes.string,
     className: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    targetRef: PropTypes.oneOfType([
+      PropTypes.func,
+      PropTypes.shape({ current: PropTypes.any })
+    ])
   };
 
   state = {
@@ -224,7 +234,14 @@ class Menu extends Component<MenuProps, MenuState> {
   };
 
   render() {
-    const { theme, animation, style, className, children } = this.props;
+    const {
+      theme,
+      animation,
+      style,
+      className,
+      children,
+      targetRef
+    } = this.props;
     const { visible, nativeEvent, propsFromTrigger, x, y } = this.state;
 
     const cssClasses = cx(styles.menu, className, {
@@ -239,7 +256,7 @@ class Menu extends Component<MenuProps, MenuState> {
     };
 
     return (
-      <Portal>
+      <Portal targetRef={targetRef}>
         {visible && (
           <div
             className={cssClasses}
