@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 class Portal extends PureComponent<{
   children: ReactNode;
-  targetRef?: React.RefObject<HTMLElement>;
+  targetRef?: React.RefObject<HTMLElement> | HTMLElement | HTMLBodyElement;
 }> {
   static propTypes = {
     children: PropTypes.node.isRequired,
@@ -22,10 +22,24 @@ class Portal extends PureComponent<{
   componentDidMount() {
     const { targetRef } = this.props;
     this.container = document.createElement('div');
-    if (!targetRef || !targetRef.current) {
+    console.log('targetRef', targetRef, typeof targetRef);
+
+    if (!targetRef) {
       document.body.appendChild(this.container);
-    } else {
+    } else if ('current' in targetRef && targetRef.current) {
       targetRef.current.appendChild(this.container);
+    } else if (targetRef instanceof HTMLBodyElement) {
+      console.log('targetRef: ', targetRef);
+      targetRef.appendChild(this.container);
+    } else if (targetRef instanceof HTMLElement) {
+      console.log('targetRef: ', targetRef);
+      targetRef.appendChild(this.container);
+    } else {
+      console.log(targetRef instanceof HTMLBodyElement);
+      console.table(targetRef);
+
+      // @ts-ignore
+      targetRef.appendChild(this.container);
     }
 
     this.setState({
@@ -35,10 +49,17 @@ class Portal extends PureComponent<{
 
   componentWillUnmount() {
     const { targetRef } = this.props;
-    if (!targetRef || !targetRef.current) {
+
+    if (!targetRef) {
       document.body.removeChild(this.container);
-    } else {
+    } else if ('current' in targetRef && targetRef.current) {
       targetRef.current.removeChild(this.container);
+    } else if (
+      targetRef instanceof HTMLElement ||
+      targetRef instanceof HTMLBodyElement
+    ) {
+      debugger;
+      targetRef.removeChild(this.container);
     }
   }
 

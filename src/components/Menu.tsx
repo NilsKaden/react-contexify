@@ -49,7 +49,7 @@ export interface MenuProps extends StyleProps {
    * Menu will be rendered inside to targetRef
    * use this to render inside an iframe
    */
-  targetRef?: React.RefObject<HTMLElement>;
+  targetRef?: React.RefObject<HTMLElement> | HTMLElement | HTMLBodyElement;
 
   /**
    * Invoked when the menu is shown.
@@ -80,7 +80,8 @@ class Menu extends Component<MenuProps, MenuState> {
     style: PropTypes.object,
     targetRef: PropTypes.oneOfType([
       PropTypes.func,
-      PropTypes.shape({ current: PropTypes.any })
+      PropTypes.shape({ current: PropTypes.any }),
+      PropTypes.node
     ])
   };
 

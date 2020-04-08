@@ -33,12 +33,15 @@ const square = {
 };
 
 const menuId = 1;
+
+const iframe: HTMLElement = document.querySelector('iframe')!.contentWindow!
+  .document.body;
 const MyAwesomeMenu: React.SFC<{
   theme: string;
   animation: string;
   onClick: (p: any) => void;
 }> = ({ theme, animation, onClick }) => (
-  <Menu id={menuId} theme={theme} animation={animation}>
+  <Menu id={menuId} theme={theme} animation={animation} targetRef={iframe}>
     <Item onClick={onClick}>
       <span role="role">💩</span>
       Foo
