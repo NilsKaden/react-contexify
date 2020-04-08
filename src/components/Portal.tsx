@@ -5,13 +5,19 @@ import PropTypes from 'prop-types';
 class Portal extends PureComponent<{
   children: ReactNode;
   targetRef?: React.RefObject<HTMLElement> | HTMLElement | HTMLBodyElement;
+  isRenderingToCustomTarget?: boolean;
 }> {
   static propTypes = {
     children: PropTypes.node.isRequired,
     targetRef: PropTypes.oneOfType([
       PropTypes.func,
       PropTypes.shape({ current: PropTypes.any })
-    ])
+    ]),
+    isRenderingToCustomTarget: PropTypes.bool
+  };
+
+  static defaultProps = {
+    isRenderingToCustomTarget: false
   };
 
   state = {
@@ -20,26 +26,17 @@ class Portal extends PureComponent<{
   container = {} as HTMLDivElement;
 
   componentDidMount() {
-    const { targetRef } = this.props;
+    const { isRenderingToCustomTarget } = this.props;
     this.container = document.createElement('div');
-    console.log('targetRef', targetRef, typeof targetRef);
 
-    if (!targetRef) {
+    if (!isRenderingToCustomTarget) {
       document.body.appendChild(this.container);
-    } else if ('current' in targetRef && targetRef.current) {
-      targetRef.current.appendChild(this.container);
-    } else if (targetRef instanceof HTMLBodyElement) {
-      console.log('targetRef: ', targetRef);
-      targetRef.appendChild(this.container);
-    } else if (targetRef instanceof HTMLElement) {
-      console.log('targetRef: ', targetRef);
-      targetRef.appendChild(this.container);
     } else {
-      console.log(targetRef instanceof HTMLBodyElement);
-      console.table(targetRef);
-
       // @ts-ignore
-      targetRef.appendChild(this.container);
+      const iframeBody: HTMLBodyElement = document.body.querySelector('iframe')
+        .contentWindow.document.body;
+      console.log(iframeBody, typeof iframeBody, this.container);
+      iframeBody.appendChild(this.container);
     }
 
     this.setState({
@@ -48,18 +45,16 @@ class Portal extends PureComponent<{
   }
 
   componentWillUnmount() {
-    const { targetRef } = this.props;
+    const { isRenderingToCustomTarget } = this.props;
 
-    if (!targetRef) {
+    if (!isRenderingToCustomTarget) {
       document.body.removeChild(this.container);
-    } else if ('current' in targetRef && targetRef.current) {
-      targetRef.current.removeChild(this.container);
-    } else if (
-      targetRef instanceof HTMLElement ||
-      targetRef instanceof HTMLBodyElement
-    ) {
-      debugger;
-      targetRef.removeChild(this.container);
+    } else {
+      // @ts-ignore
+      const iframeBody: HTMLBodyElement = document.body.querySelector('iframe')
+        .contentWindow.document.body;
+      console.log(iframeBody, typeof iframeBody, this.container);
+      iframeBody.removeChild(this.container);
     }
   }
 

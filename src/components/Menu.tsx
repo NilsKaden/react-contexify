@@ -51,6 +51,8 @@ export interface MenuProps extends StyleProps {
    */
   targetRef?: React.RefObject<HTMLElement> | HTMLElement | HTMLBodyElement;
 
+  isRenderingToCustomTarget?: boolean;
+
   /**
    * Invoked when the menu is shown.
    */
@@ -82,7 +84,8 @@ class Menu extends Component<MenuProps, MenuState> {
       PropTypes.func,
       PropTypes.shape({ current: PropTypes.any }),
       PropTypes.node
-    ])
+    ]),
+    isRenderingToCustomTarget: PropTypes.bool
   };
 
   state = {
@@ -241,7 +244,8 @@ class Menu extends Component<MenuProps, MenuState> {
       style,
       className,
       children,
-      targetRef
+      targetRef,
+      isRenderingToCustomTarget
     } = this.props;
     const { visible, nativeEvent, propsFromTrigger, x, y } = this.state;
 
@@ -257,7 +261,10 @@ class Menu extends Component<MenuProps, MenuState> {
     };
 
     return (
-      <Portal targetRef={targetRef}>
+      <Portal
+        targetRef={targetRef}
+        isRenderingToCustomTarget={isRenderingToCustomTarget}
+      >
         {visible && (
           <div
             className={cssClasses}

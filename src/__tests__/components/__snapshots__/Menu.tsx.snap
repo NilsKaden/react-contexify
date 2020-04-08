@@ -4,7 +4,9 @@ exports[`Menu Should remove null Item from menu 1`] = `
 <Menu
   id="foo"
 >
-  <Portal>
+  <Portal
+    isRenderingToCustomTarget={false}
+  >
     <Portal
       containerInfo={
         <div>
