@@ -122,28 +122,75 @@ class Menu extends Component<MenuProps, MenuState> {
   }
 
   bindWindowEvent = () => {
-    window.addEventListener('resize', this.hide);
-    window.addEventListener('contextmenu', this.hide);
-    window.addEventListener('mousedown', this.hide);
-    window.addEventListener('click', this.hide);
-    window.addEventListener('scroll', this.hide);
-    window.addEventListener('keydown', this.handleKeyboard);
+    if (this.props.isRenderingToCustomTarget) {
+      const iframeWindow =
+        window.document.querySelector('iframe')!.contentWindow || window;
+      console.log('bind iframewindow: ', iframeWindow);
+
+      iframeWindow.addEventListener('resize', this.hide);
+      iframeWindow.addEventListener('contextmenu', this.hide);
+      iframeWindow.addEventListener('mousedown', this.hide);
+      iframeWindow.addEventListener('click', this.hide);
+      iframeWindow.addEventListener('scroll', this.hide);
+      // @ts-ignore
+      iframeWindow.addEventListener('keydown', this.handleKeyboard);
+    } else {
+      window.addEventListener('resize', this.hide);
+      window.addEventListener('contextmenu', this.hide);
+      window.addEventListener('mousedown', this.hide);
+      window.addEventListener('click', this.hide);
+      window.addEventListener('scroll', this.hide);
+      window.addEventListener('keydown', this.handleKeyboard);
+    }
   };
 
   unBindWindowEvent = () => {
-    window.removeEventListener('resize', this.hide);
-    window.removeEventListener('contextmenu', this.hide);
-    window.removeEventListener('mousedown', this.hide);
-    window.removeEventListener('click', this.hide);
-    window.removeEventListener('scroll', this.hide);
-    window.removeEventListener('keydown', this.handleKeyboard);
+    if (this.props.isRenderingToCustomTarget) {
+      const iframeWindow =
+        window.document.querySelector('iframe')!.contentWindow || window;
+      console.log('unbind iframewindow: ', iframeWindow);
+
+      iframeWindow.removeEventListener('resize', this.hide);
+      iframeWindow.removeEventListener('contextmenu', this.hide);
+      iframeWindow.removeEventListener('mousedown', this.hide);
+      iframeWindow.removeEventListener('click', this.hide);
+      iframeWindow.removeEventListener('scroll', this.hide);
+      // @ts-ignore
+      iframeWindow.removeEventListener('keydown', this.handleKeyboard);
+    } else {
+      window.removeEventListener('resize', this.hide);
+      window.removeEventListener('contextmenu', this.hide);
+      window.removeEventListener('mousedown', this.hide);
+      window.removeEventListener('click', this.hide);
+      window.removeEventListener('scroll', this.hide);
+      window.removeEventListener('keydown', this.handleKeyboard);
+    }
   };
 
-  onMouseEnter = () => window.removeEventListener('mousedown', this.hide);
+  onMouseEnter = () => {
+    if (this.props.isRenderingToCustomTarget) {
+      const iframeWindow =
+        window.document.querySelector('iframe')!.contentWindow || window;
+      console.log('mouseEnter iframewindow: ', iframeWindow);
+      iframeWindow.removeEventListener('mousedown', this.hide);
+    } else {
+      window.removeEventListener('mousedown', this.hide);
+    }
+  };
 
-  onMouseLeave = () => window.addEventListener('mousedown', this.hide);
+  onMouseLeave = () => {
+    if (this.props.isRenderingToCustomTarget) {
+      const iframeWindow =
+        window.document.querySelector('iframe')!.contentWindow || window;
+      console.log('mouseLeave iframewindow: ', iframeWindow);
+      iframeWindow.addEventListener('mousedown', this.hide);
+    } else {
+      window.addEventListener('mousedown', this.hide);
+    }
+  };
 
   hide = (event?: Event) => {
+    console.log('hiding:', event);
     // Safari trigger a click event when you ctrl + trackpad
     // Firefox:  trigger a click event when right click occur
     const e = event as KeyboardEvent & MouseEvent;

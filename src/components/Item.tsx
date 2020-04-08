@@ -79,6 +79,7 @@ class Item extends Component<ItemProps> {
 
   render() {
     const { className, style, children } = this.props;
+    console.log('ITEM onclick: ', this.props.onClick);
 
     const cssClasses = cx(styles.item, className, {
       [`${styles.itemDisabled}`]: this.isDisabled

@@ -41,7 +41,13 @@ const MyAwesomeMenu: React.SFC<{
   animation: string;
   onClick: (p: any) => void;
 }> = ({ theme, animation, onClick }) => (
-  <Menu id={menuId} theme={theme} animation={animation} targetRef={iframe}>
+  <Menu
+    id={menuId}
+    theme={theme}
+    animation={animation}
+    targetRef={iframe}
+    isRenderingToCustomTarget
+  >
     <Item onClick={onClick}>
       <span role="role">💩</span>
       Foo
